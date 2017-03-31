@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Game</title>
+  <meta charset="utf-8"/>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<style>
+.block {
+
+    position:absolute;
+    background-color: #abc;
+    width: 90px;
+    height: 90px;
+
+    }
+
+    p {
+        color: white;
+        font-size: 26px;
+    }
+</style>
+  <link href="destroy_boxes.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+  <div class="stars"></div>
+  <div class="twinkling">
+  <p id="begin"></p>
+  <p id="begin2">Game instructions :
+    <br> By pressing 'P' you can either save or pause your current game state
+    <br> By pressing 'L' you can load your latest saved gamestate.
+    <br> Game will start, if you press the gray box, but remember these hotkeys 'P' and 'L'.
+    <br> In game you are supposed to destroy gray boxes by clicking those with your mouse.
+
+</p>
+  <div id="ani" onClick="stopAnimate()" class="block"></div>
+<p id="endText"></p>
+  </div>
+
+</body>
+<script>
+var score = 0;
+var blockSpeed = 4000;
+var bodyHeight = $('body').height();
+var aniTop = $('#ani').offset().top;
+var topToBottom = bodyHeight - aniTop - $('#ani').outerHeight();
+var maxWidth = (screen.width-100);
+var min = 0;
+
+$(document).on("click", "#newGame", function(){
+    location.reload(true);
+    startAnimate();
+});
+updateScore();
+
+window.addEventListener("message", function(evt) {
+
+  if(evt.data.messageType === "SCORE") {
+    $("#endText").append("<center>Pelaaja1: " + evt.data.score + " </center>");
+
+  } else if (evt.data.messageType === "ERROR") {
+    alert(evt.data.info);
+  }
+  else if(evt.data.messageType === "LOAD") {
+    score = JSON.parse(evt.data.gameState.score);
+    blockSpeed = JSON.parse(evt.data.gameState.blockSpeed);
+    updateScore();
+
+  }
+});
+$(function() {
+  var message =  {
+    messageType: "SETTING",
+    options: {
+    	"width": screen.width,
+      "height": screen.height
+    }
+  };
+  window.parent.postMessage(message, "*");
+});
+
+function getRandomNumber(min, maxWidth) {
+  min = Math.ceil(min);
+  maxWidth = Math.floor(maxWidth);
+    return Math.floor(Math.random() * (maxWidth - min)) + min;
+}
+
+function startAnimate(){
+  $('#ani').animate({
+      bottom: topToBottom}, {
+      duration: blockSpeed,
+      complete: function() { gameEnd(); }
+  });
+
+}
+
+function gameEnd(){
+$( "#ani").remove();
+$("#begin").remove();
+$("#begin2").remove();
+$("#endText").append("<center><button id=newGame>Start new game!</button></center><br>");
+$("#endText").append("<center><button onClick=submit_score()>submit your score!</button></center><br>");
+$("#endText").append('<center><h2>---- Highscore table  ----</h2></center><br>');
+
+}
+
+function updateScore(){
+
+$("#begin").text("Score : " + score);
+}
+function stopAnimate(){
+  $("#begin2").remove();
+  $("#ani").stop();
+  $( "#ani" ).toggle("explode");
+  $( "#ani").remove();
+  score = (score+100);
+  updateScore();
+  createNewDiv();
+}
+
+function submit_score(){
+  var msg = {
+    "messageType": "SCORE",
+    "score": score.toString()
+  };
+  window.parent.postMessage(msg, "*");
+}
+
+function createNewDiv(){
+  var leftAmount = getRandomNumber(min, maxWidth);
+
+$('.twinkling').append('<div id="ani" style="left: '+ leftAmount +'px" onClick="stopAnimate()" class="block"></div>');
+blockSpeed = (blockSpeed-100);
+startAnimate();
+}
+
+document.addEventListener("keyup", function(event) {
+  $("#ani").stop();
+
+
+  if (event.which == 80){
+
+var save = confirm("Do you wanna save your current gamestate?")
+
+if(save == true){
+ var msg = {
+      "messageType": "SAVE",
+      "gameState": {
+        "score": score.toString(),
+        "blockSpeed": blockSpeed.toString()
+      }
+    };
+    window.parent.postMessage(msg, "*");
+      startAnimate();
+  }
+
+  else {
+
+  startAnimate();
+  }
+
+
+
+}
+else if(event.which == 76){
+
+var load = confirm("Do you wanna load your saved gamestate?")
+ if(load == true){
+
+ var msg = {
+    "messageType": "LOAD_REQUEST",
+  };
+  window.parent.postMessage(msg, "*");
+  startAnimate();
+}
+else{
+
+  startAnimate();
+}
+
+
+}
+else {
+startAnimate();
+}
+
+
+});
+
+
+</script>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Actions</title>
+  <meta charset="utf-8">
+  <script src="https://code.jquery.com/jquery-3.1.1.js"
+          integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+          crossorigin="anonymous">
+          </script>
+  <script>
+  /* global $ */
+  $(document).ready(function() {
+    'use strict';
+
+    var savedState = "";
+    var savedBlockSpeed = "";
+    var save = false;
+
+    $(window).on('message', function(evt) {
+      //Note that messages from all origins are accepted
+      //Get data from sent message
+      var data = evt.originalEvent.data;
+      var type = data.messageType;
+      var score2 = 200;
+      if (type === "SETTING") {
+        $("#encoder_iframe").attr("width", data.options.width);
+        $("#encoder_iframe").attr("height", data.options.height);
+      }
+
+      if (type === "SCORE") {
+        var msg = {
+          "messageType": "SCORE",
+          "score": data.score.toString()
+        };
+        $("#encoder_iframe")[0].contentWindow.postMessage(msg, "*");
+
+
+        $('#actions').prepend("<li>Score: " + data.score + "</li>");
+
+      } else if (type === "SAVE") {
+        savedState = data.gameState.score;
+        savedBlockSpeed = data.gameState.blockSpeed;
+        save = true;
+        $('#actions').prepend("<li>State: " + data.gameState.score+ "</li>");
+      } else if (type === "LOAD_REQUEST") {
+
+        if (save) {
+
+          var msg = {
+            "messageType": "LOAD",
+            "gameState": {
+              score : savedState.toString(),
+              blockSpeed: savedBlockSpeed.toString()
+            }
+          };
+          $("#encoder_iframe")[0].contentWindow.postMessage(msg, "*")
+        } else {
+
+          var msg = {
+            "messageType": "ERROR",
+            "info": "No saved state!"
+          };
+          $("#encoder_iframe")[0].contentWindow.postMessage(msg, "*")
+        }
+      }
+    });
+  });
+  </script>
+</head>
+
+<body>
+  <iframe id="encoder_iframe" src="destroy_boxes.html"></iframe>
+  <ul id="actions">
+  </ul>
+</body>
+</html>
