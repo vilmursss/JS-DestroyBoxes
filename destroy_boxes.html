@@ -62,7 +62,7 @@ window.addEventListener("message", function(evt) {
 
   } else if (evt.data.messageType === "ERROR") {
     alert(evt.data.info);
-    startAnimate();
+    stopAnimate();
   }
   else if(evt.data.messageType === "LOAD") {
     score = JSON.parse(evt.data.gameState.score);
