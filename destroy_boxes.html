@@ -42,11 +42,12 @@
 
 </body>
 <script>
+var gameEndCheck = false;
 var score = 0;
 var blockSpeed = 4000;
 var bodyHeight = $('body').height();
 var aniTop = $('#ani').offset().top;
-var topToBottom = bodyHeight - aniTop - $('#ani').outerHeight();
+var topToBottom = 0;
 var maxWidth = (screen.width-100);
 var min = 0;
 
@@ -78,8 +79,8 @@ $(function() {
   var message =  {
     messageType: "SETTING",
     options: {
-    	"width": screen.width,
-      "height": screen.height
+    	"width": 800,
+      "height": 600
     }
   };
   window.parent.postMessage(message, "*");
@@ -101,6 +102,7 @@ function startAnimate(){
 }
 
 function gameEnd(){
+gameEndCheck = true;
 $( "#ani").remove();
 $("#begin").remove();
 $("#begin2").remove();
@@ -133,7 +135,7 @@ function submit_score(){
 }
 
 function createNewDiv(){
-  var leftAmount = getRandomNumber(min, maxWidth);
+  var leftAmount = getRandomNumber(min, 700);
 
 $('.twinkling').append('<div id="ani" style="left: '+ leftAmount +'px" onClick="stopAnimate()" class="block"></div>');
 blockSpeed = (blockSpeed-100);
@@ -143,6 +145,7 @@ startAnimate();
 document.addEventListener("keyup", function(event) {
   $("#ani").stop();
 
+if(gameEndCheck == false){
 
   if (event.which == 80){
 
@@ -157,8 +160,9 @@ if(save == true){
       }
     };
     window.parent.postMessage(msg, "*");
+    score = score-100;
       stopAnimate();
-      score = score-100;
+
   }
 
   else {
@@ -191,6 +195,11 @@ else {
 startAnimate();
 }
 
+}
+else {
+
+
+}
 
 });
 
