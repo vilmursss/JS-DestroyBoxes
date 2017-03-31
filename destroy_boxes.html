@@ -71,6 +71,7 @@ window.addEventListener("message", function(evt) {
     score = JSON.parse(evt.data.gameState.score);
     blockSpeed = JSON.parse(evt.data.gameState.blockSpeed);
     updateScore();
+    score = score-100;
     stopAnimate();
 
   }
