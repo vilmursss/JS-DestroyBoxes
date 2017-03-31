@@ -69,6 +69,7 @@ window.addEventListener("message", function(evt) {
     score = JSON.parse(evt.data.gameState.score);
     blockSpeed = JSON.parse(evt.data.gameState.blockSpeed);
     updateScore();
+    stopAnimate();
 
   }
 });
@@ -155,7 +156,8 @@ if(save == true){
       }
     };
     window.parent.postMessage(msg, "*");
-      startAnimate();
+      stopAnimate();
+      score = score-100;
   }
 
   else {
