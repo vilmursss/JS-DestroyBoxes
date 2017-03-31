@@ -58,7 +58,7 @@ updateScore();
 window.addEventListener("message", function(evt) {
 
   if(evt.data.messageType === "SCORE") {
-    $("#endText").append("<center>Pelaaja1: " + evt.data.score + " </center>");
+    $("#endText").append("<center>Player X: " + evt.data.score + " </center>");
 
   } else if (evt.data.messageType === "ERROR") {
     alert(evt.data.info);
