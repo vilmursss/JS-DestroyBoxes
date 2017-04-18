@@ -96,7 +96,7 @@ function getRandomNumber(min, maxWidth) {
 function startAnimate(){
   $('#ani').animate({
       bottom: topToBottom}, {
-      duration: blockSpeed,
+      duration: (blockSpeed-2),
       complete: function() { gameEnd(); }
   });
 
