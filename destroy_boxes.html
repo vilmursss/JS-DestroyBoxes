@@ -109,7 +109,7 @@ $("#begin").remove();
 $("#begin2").remove();
 $("#endText").append("<center><button id=newGame>Start new game!</button></center><br>");
 $("#endText").append("<center><button onClick=submit_score()>submit your score!</button></center><br>");
-$("#endText").append('<center><h2>Unfortunately box hit the ground and game endend :(</h2></center><br>');
+$("#endText").append('<center><h2>Unfortunately the box hit the ground and game endend :(</h2></center><br>');
 $("#endText").append('<center><h2>You got ' + score + ' points </h2></center><br>');
 
 }
@@ -144,13 +144,14 @@ blockSpeed = (blockSpeed-100);
 startAnimate();
 }
 
-document.addEventListener("keyup", function(event) {
-  $("#ani").stop();
+window.onkeyup = function (e)  {
+
 
 if(gameEndCheck == false){
+var code = e.keyCode ? e.keyCode : e.which;
 
-  if (event.which == 80){
-
+  if (code == 80){
+  $("#ani").stop();
 var save = confirm("Do you wanna save your current gamestate?")
 
 if(save == true){
@@ -175,8 +176,8 @@ if(save == true){
 
 
 }
-else if(event.which == 76){
-
+if(code == 76){
+$("#ani").stop();
 var load = confirm("Do you wanna load your saved gamestate?")
  if(load == true){
 
@@ -193,17 +194,8 @@ else{
 
 
 }
-else {
-startAnimate();
 }
-
-}
-else {
-
-
-}
-
-});
+};
 
 
 </script>
