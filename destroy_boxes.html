@@ -3,11 +3,11 @@
 <head>
   <title>Destroy Boxes</title>
   <meta charset="utf-8"/>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<style>
-.block {
+  <style>
+    .block {
 
     position:absolute;
     background-color: #abc;
@@ -20,28 +20,32 @@
         color: white;
         font-size: 26px;
     }
-</style>
+  </style>
+
   <link href="destroy_boxes.css" rel="stylesheet" type="text/css" />
+
 </head>
+
 <body>
 
   <div class="stars"></div>
   <div class="twinkling">
-  <p id="begin"></p>
-  <p id="begin2">Game instructions :
-    <br> By pressing 'P' you can either save or pause your current game state
-    <br> By pressing 'L' you can load your latest saved gamestate.
-    <br> Game will start, if you press the gray box, but remember these hotkeys 'P' and 'L'.
-    <br> In game you are supposed to destroy gray boxes by clicking those with your mouse.
-    <br> Game supports at least latests versions of these three browsers: Chrome, Firefox & Palemoon.
-
-</p>
-  <div id="ani" onClick="stopAnimate()" class="block"></div>
-<p id="endText"></p>
+    <p id="begin"></p>
+    <p id="begin2">Game instructions :
+      <br> By pressing 'P' you can either save or pause your current game state
+      <br> By pressing 'L' you can load your latest saved gamestate.
+      <br> Game will start, if you press the gray box, but remember these hotkeys 'P' and 'L'.
+      <br> In game you are supposed to destroy gray boxes by clicking those with your mouse.
+      <br> Game supports at least latests versions of these three browsers: Chrome, Firefox & Palemoon.
+    </p>
+    <div id="ani" onClick="stopAnimate()" class="block"></div>
+    <p id="endText"></p>
   </div>
 
 </body>
+
 <script>
+
 var gameEndCheck = false;
 var score = 0;
 var blockSpeed = 4000;
@@ -87,11 +91,15 @@ $(function() {
   window.parent.postMessage(message, "*");
 });
 
+// Function for getting random number betweem 0 and user screen max width
+
 function getRandomNumber(min, maxWidth) {
   min = Math.ceil(min);
   maxWidth = Math.floor(maxWidth);
     return Math.floor(Math.random() * (maxWidth - min)) + min;
 }
+
+// Function, which starts block animating
 
 function startAnimate(){
   $('#ani').animate({
@@ -101,6 +109,8 @@ function startAnimate(){
   });
 
 }
+
+// Function which will appear, when block hits the groud
 
 function gameEnd(){
 gameEndCheck = true;
@@ -114,10 +124,15 @@ $("#endText").append('<center><h2>You got ' + score + ' points </h2></center><br
 
 }
 
+// Score update function
+
 function updateScore(){
 
 $("#begin").text("Score : " + score);
 }
+
+// Function which stops blocks to animate, if user have paused or is saving the current game state
+
 function stopAnimate(){
   $("#begin2").remove();
   $("#ani").stop();
@@ -128,6 +143,8 @@ function stopAnimate(){
   createNewDiv();
 }
 
+// Sends postMessage to django's database, which sends the information of game score
+
 function submit_score(){
   var msg = {
     "messageType": "SCORE",
@@ -136,6 +153,8 @@ function submit_score(){
   window.parent.postMessage(msg, "*");
 }
 
+// Create new block
+
 function createNewDiv(){
   var leftAmount = getRandomNumber(min, 700);
 
@@ -143,6 +162,8 @@ $('.twinkling').append('<div id="ani" style="left: '+ leftAmount +'px" onClick="
 blockSpeed = (blockSpeed-100);
 startAnimate();
 }
+
+// function for hotkeys, f.e saving, loading or pausing the game.
 
 window.onkeyup = function (e)  {
 
@@ -188,15 +209,8 @@ var load = confirm("Do you wanna load your saved gamestate?")
   startAnimate();
 }
 else{
-
   startAnimate();
-}
-
-
-}
-}
-};
-
+}}}};
 
 </script>
 </html>
