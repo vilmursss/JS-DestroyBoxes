@@ -1,5 +1,5 @@
 # destroy_boxes
 
-This game was made for being part of the online game store, which is running in this address: http://vvvj-gamestore.herokuapp.com/gamestore/
+The game is a part of the online game store, which is running at: http://vvvj-gamestore.herokuapp.com/gamestore/
 
-This game interacts game store's database with ajax postMessages.
+The game uses ajax postMessages for interacting with game store database.
